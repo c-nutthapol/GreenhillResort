@@ -24,7 +24,7 @@ if ($_SESSION['id'] == "") {
                         <!-- Button trigger modal -->
                         <div class="fluid-container">
                             <div class="row">
-                                <?php if ($result != null) { ?>
+                                <?php if ( !empty($result) &&$result != null) { ?>
                                     <?php foreach ($result as $travel) { ?>
                                         <div class="col-sm-3 mb-3">
                                             <div class="card">
@@ -154,7 +154,7 @@ if ($_SESSION['id'] == "") {
             $.ajax({
                 type: "GET",
                 url: "../../ajax/travel_edit.php",
-                data: "act=edit" + "&id=" + id,
+                data: "act=get" + "&id=" + id,
                 success: function(text) {
                     document.getElementById('editContent').innerHTML = text
                     $('#ModalTralvel_Edit').modal('show')

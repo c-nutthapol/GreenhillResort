@@ -67,20 +67,55 @@ if (isset($_GET['act'])) {
                         }
                     } else {
                         echo "<script>alert('The file cannot be deleted.');</script>";
-                        header('Location:/mini_project/pages/layout/travel.php');
+                        header("Refresh:0; url=?act=all");
                     }
                 } else {
                     echo "<script>alert('No data found');</script>";
-                    header('Location:/mini_project/pages/layout/travel.php');
+                    header("Refresh:0; url=?act=all");
                 }
             } else {
-                header('Location:/mini_project/pages/layout/travel.php');
+                header("Refresh:0; url=?act=all");
             }
 
             //echo json_encode($json);
 
             break;
         case 'edit':
+            include "../../../functions.php";
+            $db = new DB_con;
+            if ($_POST) {
+                $target_dir = "../../../assets/img/"; //part เก็บไฟล์รูป
+                $target_file = 'img_' . uniqid() . basename($_FILES["t_img"]["name"]);
+                
+                if ($_FILES["t_img"]["name"] != null) {
+                    if (move_uploaded_file($_FILES["t_img"]["tmp_name"], $target_dir . $target_file)) {
+                        $sql = "UPDATE travel SET t_name = '".$_POST['t_name']."' ,t_address = '".$_POST['t_address']."' ,t_img = '".$target_file."' WHERE t_id = '".$_POST['id']."'";
+                        if (mysqli_query($db->dbcon, $sql)) {
+                            echo "<script>alert('Insert Success');</script>";
+                            header("Refresh:0; url=?act=all");
+                        } else {
+                            echo "<script>alert('Insert fail');</script>";
+                            header("Refresh:0; url=?act=all");
+                        }
+                    } else {
+                        echo "<script>alert('Add fail');</script>";
+                        header("Refresh:0; url=?act=all");
+                    }
+                } else {
+                    $sql = "UPDATE travel SET t_name = '".$_POST['t_name']."' ,t_address = '".$_POST['t_address']."' WHERE t_id = '".$_POST['id']."'";
+                    if (mysqli_query($db->dbcon, $sql)) {
+                        echo "<script>alert('Insert Success');</script>";
+                        header("Refresh:0; url=?act=all");
+                    } else {
+                        echo "<script>alert('Insert fail');</script>";
+                        header("Refresh:0; url=?act=all");
+                    }
+                }
+            }
+            // echo json_encode($json);
+
+            break;
+        case 'get':
             include "../../functions.php";
             $db = new DB_con;
             if ($_GET) {
@@ -92,29 +127,7 @@ if (isset($_GET['act'])) {
                     $result = "";
                 }
             }
-
-            if ($_POST) {
-                $target_dir = "../../../assets/img/"; //part เก็บไฟล์รูป
-                $target_file = 'img_' . uniqid() . basename($_FILES["t_img"]["name"]);
-                if (move_uploaded_file($_FILES["t_img"]["tmp_name"], $target_dir . $target_file)) {
-                    $sql = "UPDATE travel SET t_name = {$_POST['t_name']} ,t_address = {$_POST['t_address']} ";
-                    if (mysqli_query($db->dbcon, $sql)) {
-                        echo "<script>console.log('Insert Success');</script>";
-                        header("Refresh:0; url=?act=all");
-                        
-                    } else {
-                        echo "<script>console.log('Insert fail');</script>";
-                        header("Refresh:0; url=?act=all");
-                    }
-                } else {
-                    echo "<script>console.log('Add fail');</script>";
-                    header("Refresh:0; url=?act=all");
-                   
-                }
-            }// echo json_encode($json);
-
             break;
-
         default:
             /* header('Location:../layout/travel.php?act=all'); */
             break;
