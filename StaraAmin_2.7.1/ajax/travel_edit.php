@@ -11,7 +11,7 @@
     </button>
 </div>
 <!-- Modal Body Custom -->
-<form action="?act=edit" method="post" enctype="multipart/form-data"></form>
+<form action="?act=edit" method="post" enctype="multipart/form-data">
     <div class="modal-body pt-0">
         <div class="row">
             <div class="col">
@@ -52,6 +52,7 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
             Close
         </button>
+        <input type="hidden" name="id" value="<?php echo $result['t_id']; ?>">
         <button type="submit" name="act" class="btn btn-primary">
             Save
         </button>
