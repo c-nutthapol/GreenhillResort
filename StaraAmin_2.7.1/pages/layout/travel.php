@@ -18,7 +18,6 @@ if ($_SESSION['id'] == "") {
                             <button type="button" class="btn btn-primary ml-auto" data-toggle="modal" data-target="#ModalTralvel">
                                 เพิ่มสถานที่ท่องเที่ยว
                             </button>
-
                         </div>
                     </div>
                     <div class="card-body">
