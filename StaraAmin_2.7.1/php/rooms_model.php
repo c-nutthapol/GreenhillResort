@@ -8,7 +8,7 @@ if (isset($_GET['act'])) {
         case 'all':
             include "../../../functions.php";
             $db = new DB_con;
-            $sql = "SELECT * FROM travel ORDER BY t_id ASC";
+            $sql = "SELECT * FROM rooms ORDER BY r_id ASC";
             $query = mysqli_query($db->dbcon, $sql);
 
             if (mysqli_num_rows($query) > 0) {
@@ -26,9 +26,9 @@ if (isset($_GET['act'])) {
             $db = new DB_con;
             if ($_POST) {
                 $target_dir = "../../../assets/img/"; //part เก็บไฟล์รูป
-                $target_file = 'img_' . uniqid() . basename($_FILES["t_img"]["name"]);
-                if (move_uploaded_file($_FILES["t_img"]["tmp_name"], $target_dir . $target_file)) {
-                    $sql = "INSERT INTO travel (t_name,t_address,t_img) VALUES ('" . $_POST['t_name'] . "', '" . $_POST['t_address'] . "', '" .  $target_file . "')";
+                $target_file = 'img_' . uniqid() . basename($_FILES["r_img"]["name"]);
+                if (move_uploaded_file($_FILES["r_img"]["tmp_name"], $target_dir . $target_file)) {
+                    $sql = "INSERT INTO rooms (r_name,r_detail,r_img) VALUES ('" . $_POST['r_name'] . "', '" . $_POST['r_detail'] . "', '" .  $target_file . "')";
                     if (mysqli_query($db->dbcon, $sql)) {
                         echo "<script>alert('Insert Success');</script>";
                         header("Refresh:0; url=?act=all");
@@ -49,32 +49,32 @@ if (isset($_GET['act'])) {
             include "../../functions.php";
             $db = new DB_con;
             if ($_GET) {
-                $sql = "SELECT * FROM travel WHERE t_id = '" . $_GET['id'] . "' ";
+                $sql = "SELECT * FROM rooms WHERE r_id = '" . $_GET['id'] . "' ";
                 $query = mysqli_query($db->dbcon, $sql);
 
                 if (mysqli_num_rows($query) > 0) {
                     $result = mysqli_fetch_array($query);
                     $dir = "../../assets/img/";
-                    if (unlink($dir . $result['t_img'])) {
+                    if (unlink($dir . $result['r_img'])) {
 
-                        $sql = "DELETE FROM travel WHERE t_id = '" . $_GET['id'] . "';";
+                        $sql = "DELETE FROM rooms WHERE r_id = '" . $_GET['id'] . "';";
                         if (mysqli_query($db->dbcon, $sql)) {
-                            echo "<script>alert('Delete success');</script>";
-                            header('Location:/mini_project/pages/layout/travel.php');
+                            // echo "<script>alert('Delete success');</script>";
+                            // header('Location:/mini_project/pages/layout/rooms.php');
                         } else {
-                            echo "<script>alert('Delete fail');</script>";
-                            header('Location:/mini_project/pages/layout/travel.php');
+                            // echo "<script>alert('Delete fail');</script>";
+                            // header('Location:/mini_project/pages/layout/rooms.php');
                         }
                     } else {
-                        echo "<script>alert('The file cannot be deleted.');</script>";
-                        header("Refresh:0; url=?act=all");
+                        // echo "<script>alert('The file cannot be deleted.');</script>";
+                        // header("Refresh:0; url=?act=all");
                     }
                 } else {
-                    echo "<script>alert('No data found');</script>";
-                    header("Refresh:0; url=?act=all");
+                    // echo "<script>alert('No data found');</script>";
+                    // header("Refresh:0; url=?act=all");
                 }
             } else {
-                header("Refresh:0; url=?act=all");
+                // header("Refresh:0; url=?act=all");
             }
 
             //echo json_encode($json);
@@ -85,31 +85,31 @@ if (isset($_GET['act'])) {
             $db = new DB_con;
             if ($_POST) {
                 $target_dir = "../../../assets/img/"; //part เก็บไฟล์รูป
-                $target_file = 'img_' . uniqid() . basename($_FILES["t_img"]["name"]);
+                $target_file = 'img_' . uniqid() . basename($_FILES["r_img"]["name"]);
 
-                if ($_FILES["t_img"]["name"] != null) {
-                    if (move_uploaded_file($_FILES["t_img"]["tmp_name"], $target_dir . $target_file)) {
-                        $sql = "UPDATE travel SET t_name = '" . $_POST['t_name'] . "' ,t_address = '" . $_POST['t_address'] . "' ,t_img = '" . $target_file . "' WHERE t_id = '" . $_POST['id'] . "'";
+                if ($_FILES["r_img"]["name"] != null) {
+                    if (move_uploaded_file($_FILES["r_img"]["tmp_name"], $target_dir . $target_file)) {
+                        $sql = "UPDATE rooms SET r_name = '" . $_POST['r_name'] . "' ,r_detail = '" . $_POST['r_detail'] . "' ,r_img = '" . $target_file . "' WHERE r_id = '" . $_POST['id'] . "'";
                         if (mysqli_query($db->dbcon, $sql)) {
-                            // echo "<script>alert('Insert Success');</script>";
-                            // header("Refresh:0; url=?act=all");
+                            echo "<script>alert('Insert Success');</script>";
+                            header("Refresh:0; url=?act=all");
                             
                         } else {
-                            // echo "<script>alert('Insert fail');</script>";
-                            // header("Refresh:0; url=?act=all");
+                            echo "<script>alert('Insert fail');</script>";
+                            header("Refresh:0; url=?act=all");
                         }
                     } else {
-                        // echo "<script>alert('Add fail');</script>";
-                        // header("Refresh:0; url=?act=all");
+                        echo "<script>alert('Add fail');</script>";
+                        header("Refresh:0; url=?act=all");
                     }
                 } else {
-                    $sql = "UPDATE travel SET t_name = '" . $_POST['t_name'] . "' ,t_address = '" . $_POST['t_address'] . "' WHERE t_id = '" . $_POST['id'] . "'";
+                    $sql = "UPDATE rooms SET r_name = '" . $_POST['r_name'] . "' ,r_detail = '" . $_POST['r_detail'] . "' WHERE r_id = '" . $_POST['id'] . "'";
                     if (mysqli_query($db->dbcon, $sql)) {
-                        // echo "<script>alert('Insert Success');</script>";
+                        echo "<script>alert('Insert Success');</script>";
                         header("Refresh:0; url=?act=all");
                     } else {
-                        // echo "<script>alert('Insert fail');</script>";
-                        // header("Refresh:0; url=?act=all");
+                        echo "<script>alert('Insert fail');</script>";
+                        header("Refresh:0; url=?act=all");
                     }
                 }
             }
@@ -120,7 +120,7 @@ if (isset($_GET['act'])) {
             include "../../functions.php";
             $db = new DB_con;
             if ($_GET) {
-                $sql = "SELECT * FROM travel WHERE t_id = {$_GET['id']}";
+                $sql = "SELECT * FROM rooms WHERE r_id = '".$_GET['id']."'";
                 $query = mysqli_query($db->dbcon, $sql);
                 if (mysqli_num_rows($query) > 0) {
                     $result = mysqli_fetch_array($query);
@@ -130,7 +130,7 @@ if (isset($_GET['act'])) {
             }
             break;
         default:
-            /* header('Location:../layout/travel.php?act=all'); */
+            /* header('Location:../layout/rooms.php?act=all'); */
             break;
     }
 }

@@ -22,7 +22,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="rooms.php">
+      <a class="nav-link" href="rooms.php?act=all">
       <i class="menu-icon mdi mdi-table"></i>
         <span class="menu-title">จัดการห้องพักทั้งหมด</span>
       </a>

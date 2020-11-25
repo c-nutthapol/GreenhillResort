@@ -1,10 +1,13 @@
 <?php
-session_start();
 
+
+include "../../php/rooms_model.php";
 if ($_SESSION['id'] == "") {
     header("location: pages/signin-signup/signin.php");
-} ?>
-<?php include "../../partials/_header.php"; ?>
+}
+
+include "../../partials/_header.php";
+?>
 <div class="main-panel">
     <div class="content-wrapper">
         <div class="row">
@@ -30,26 +33,47 @@ if ($_SESSION['id'] == "") {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td><img style="width: 100px; height: 100px;" src="/assets/img/room1.jpg"></td>
-                                            <td>ห้อง Superior</td>
-                                            <td>ราคาปกติ 800 บาท รวมอาหารเช้า</td>
-                                            <td>
-                                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editModalRoom">แก้ไข</button>
-                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#dlModalRoom">ลบ</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td><img style="width: 100px; height: 100px;" src="/assets/img/room2.jpg"></td>
-                                            <td>ห้อง Deluxe</td>
-                                            <td>ราคาปกติ 1,200 บาท รวมอาหารเช้า</td>
-                                            <td>
-                                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editModalRoom">แก้ไข</button>
-                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#dlModalRoom">ลบ</button>
-                                            </td>
-                                        </tr>
+                                        <?php if (!empty($result) && $result != null) { ?>
+                                            <?php $i = 1;
+                                            foreach ($result as $room) { ?>
+                                                <tr>
+                                                    <td><?= $i++ ?></td>
+                                                    <td><img style="width: 100px; height: 100px;" src="/assets/img/<?= $room['r_img'] ?>"></td>
+                                                    <td><?= $room['r_name'] ?></td>
+                                                    <td><?= $room['r_detail'] ?></td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-warning" onclick="editFrom(<?= $room['r_id'] ?>);">แก้ไข</button>
+                                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#dlModalRoom<?= $room['r_id'] ?>">ลบ</button>
+                                                    </td>
+                                                </tr>
+                                                <div class="modal fade" id="dlModalRoom<?= $room['r_id'] ?>" tabindex="-1" aria-labelledby="dlModalRoomLabel1" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content mx-auto" style="width: 50%;">
+                                                            <div class="modal-header">
+                                                                <h3 class="modal-title" id="dlModalRoomLabel1">
+                                                                    คุณต้องการลบห้องพักใช่ไหม?
+                                                                </h3>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <!-- Modal Body Custom -->
+                                                            <div class="modal-body pt-0">
+                                                                คุณแน่ใจที่จะลบห้องพักนี้ใช่ไหม ถ้าใช่กดยืนยัน
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary " data-dismiss="modal">
+                                                                        ปิด
+                                                                    </button>
+                                                                    <button type="button" onclick="delFrom(<?= $room['r_id'] ?>);" class="btn btn-primary">
+                                                                        ยืนยัน
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <?php } ?>
+                                        <?php } ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -74,24 +98,24 @@ if ($_SESSION['id'] == "") {
                     </button>
                 </div>
                 <!-- Modal Body Custom -->
-                <form action="#" method="post" enctype="multipart/form-data">
+                <form action="?act=add" method="post" enctype="multipart/form-data">
                     <div class="modal-body pt-0">
                         <div class="col-lg-12">
                             <img id="blah" src="#" alt="รูปสถานที่ท่องเที่ยว  ขนาด 350 x 500" class="mb-3 mx-auto d-block" />
                         </div>
                         <div class="col-lg-12">
-                            <p class="mb-2">รูปสถานที่ท่องเที่ยว : </p>
+                            <p class="mb-2">รูปห้องพัก : </p>
                             <div class="custom-file mb-3">
-                                <input type="file" class="custom-file-input" id="customFile" name="t_img" onchange="readURL(this);">
+                                <input type="file" class="custom-file-input" id="customFile" name="r_img" onchange="readURL(this);">
                                 <label class="custom-file-label" for="customFile">เลือกรูปภาพ</label>
                             </div>
                             <div class="form-group">
-                                <label for="TravelName">ชื่อสถานที่</label>
-                                <input type="text" class="form-control" id="TravelName" name="t_name" placeholder="ชื่อสถานที่">
+                                <label for="TravelName">ชื่อห้อง</label>
+                                <input type="text" class="form-control" id="TravelName" name="r_name" placeholder="ชื่อสถานที่">
                             </div>
                             <div class="form-group">
-                                <label for="PlaceTravel">ที่ตั้งสถานที่</label>
-                                <input type="text" class="form-control" id="PlaceTravel" name="t_address" placeholder="ที่ตั้งสถานที่">
+                                <label for="PlaceTravel">รายละเอียดห้อง</label>
+                                <input type="text" class="form-control" id="PlaceTravel" name="r_detail" placeholder="รายละเอียดห้อง">
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -110,78 +134,13 @@ if ($_SESSION['id'] == "") {
     <!-- Modal Edit -->
     <div class="modal fade" id="editModalRoom" tabindex="-1" aria-labelledby="editModalRoomLabel1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content mx-auto" style="width: 50%;">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="editModalRoomLabel1">
-                        แก้ไขห้องพัก
-                    </h3>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <!-- Modal Body Custom -->
-                <form action="#" method="post" enctype="multipart/form-data">
-                    <div class="modal-body pt-0">
-                        <div class="col-lg-12">
-                            <img id="blah" src="#" alt="รูปสถานที่ท่องเที่ยว  ขนาด 350 x 500" class="mb-3 mx-auto d-block" />
-                        </div>
-                        <div class="col-lg-12">
-                            <p class="mb-2">รูปสถานที่ท่องเที่ยว : </p>
-                            <div class="custom-file mb-3">
-                                <input type="file" class="custom-file-input" id="customFile" name="t_img" onchange="readURL(this);">
-                                <label class="custom-file-label" for="customFile">เลือกรูปภาพ</label>
-                            </div>
-                            <div class="form-group">
-                                <label for="TravelName">ชื่อสถานที่</label>
-                                <input type="text" class="form-control" id="TravelName" name="t_name" placeholder="ชื่อสถานที่">
-                            </div>
-                            <div class="form-group">
-                                <label for="PlaceTravel">ที่ตั้งสถานที่</label>
-                                <input type="text" class="form-control" id="PlaceTravel" name="t_address" placeholder="ที่ตั้งสถานที่">
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                                Close
-                            </button>
-                            <button type="submit" name="act" class="btn btn-primary">
-                                Save
-                            </button>
-                        </div>
-                    </div>
-                </form>
+            <div id="editContent" class="modal-content mx-auto" style="width: 50%;">
+
             </div>
         </div>
     </div>
     <!-- Modal Delete -->
-    <div class="modal fade" id="dlModalRoom" tabindex="-1" aria-labelledby="dlModalRoomLabel1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content mx-auto" style="width: 50%;">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="dlModalRoomLabel1">
-                        คุณต้องการลบห้องพักใช่ไหม?
-                    </h3>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <!-- Modal Body Custom -->
-                <form action="#" method="post" enctype="multipart/form-data">
-                    <div class="modal-body pt-0">
-                        คุณแน่ใจที่จะลบห้องพักนี้ใช่ไหม ถ้าใช่กดยืนยัน
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary " data-dismiss="modal">
-                                ปิด
-                            </button>
-                            <button type="submit" name="act" class="btn btn-primary">
-                                ยืนยัน
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+
 
     <script>
         // START CUSTOM IMAGE
@@ -207,6 +166,30 @@ if ($_SESSION['id'] == "") {
         $(document).ready(function() {
             $('#myTable').DataTable();
         });
+
+        function editFrom(id) {
+            $.ajax({
+                type: "GET",
+                url: "../../ajax/room_edit.php",
+                data: "act=get" + "&id=" + id,
+                success: function(text) {
+                    document.getElementById('editContent').innerHTML = text
+                    $('#editModalRoom').modal('show')
+                }
+            })
+        }
+
+        function delFrom(id) {
+            $.ajax({
+                type: "GET",
+                url: "../../php/rooms_model.php",
+                data: "act=del" + "&id=" + id,
+                success: function(text) {
+                    location.reload(1);
+                }
+            })
+            location.reload(1)
+        }
     </script>
 
     <?php include "../../partials/_footer.php"; ?>

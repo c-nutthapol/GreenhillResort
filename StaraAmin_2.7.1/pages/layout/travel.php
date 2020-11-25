@@ -18,13 +18,14 @@ if ($_SESSION['id'] == "") {
                             <button type="button" class="btn btn-primary ml-auto" data-toggle="modal" data-target="#ModalTralvel">
                                 เพิ่มสถานที่ท่องเที่ยว
                             </button>
+
                         </div>
                     </div>
                     <div class="card-body">
                         <!-- Button trigger modal -->
                         <div class="fluid-container">
                             <div class="row">
-                                <?php if ( !empty($result) &&$result != null) { ?>
+                                <?php if (!empty($result) && $result != null) { ?>
                                     <?php foreach ($result as $travel) { ?>
                                         <div class="col-sm-3 mb-3">
                                             <div class="card">
@@ -33,8 +34,8 @@ if ($_SESSION['id'] == "") {
                                                     <h4 class="card-title" style="color: #fff;"><?php echo $travel['t_name']; ?></h4>
                                                     <p class="card-text"><?php echo $travel['t_address']; ?></p>
                                                     <div class="row">
-                                                        <a class="mx-3" onclick="editFrom(<?php echo $travel['t_id']; ?>)">edit</a>
-                                                        <a name="act" href="#">delete</a>
+                                                        <a class="mx-3" href="#" onclick="editFrom(<?php echo $travel['t_id']; ?>)">edit</a>
+                                                        <a name="act" href="#" onclick="delFrom(<?php echo $travel['t_id']; ?>)">delete</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -160,6 +161,23 @@ if ($_SESSION['id'] == "") {
                     $('#ModalTralvel_Edit').modal('show')
                 }
             })
+        }
+
+        function delFrom(id) {
+            var con = confirm("คุณต้องการลบรายการนนี้หรือไม่");
+            if (con == true) {
+                $.ajax({
+                    type: "GET",
+                    url: "../../php/travel_model.php",
+                    data: "act=del" + "&id=" + id,
+                    success: function(text) {
+                        // document.getElementById('editContent').innerHTML = text
+                        
+                        // $('#ModalTralvel_Edit').modal('show')
+                    }
+                })
+                location.reload(1)
+            }
         }
     </script>
     <!-- partial:partials/_footer.php -->

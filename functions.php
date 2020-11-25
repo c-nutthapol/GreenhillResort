@@ -1,8 +1,8 @@
 <?php 
     define('DB_SERVER','localhost');
-    define('DB_USER','root');
-    define('DB_PASS','');
-    define('DB_NAME','greenhill_resort');
+    define('DB_USER','u6228831');
+    define('DB_PASS','7826');
+    define('DB_NAME','u6228831');
 
     class DB_con{
         function __construct (){
