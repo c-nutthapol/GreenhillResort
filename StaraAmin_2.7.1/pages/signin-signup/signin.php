@@ -10,8 +10,10 @@
         $result = $userdata->signin($uname, $password);
         $num = mysqli_fetch_array($result);
         if ($num > 0){
-            $_SESSION['id'] = $num['id'];
-            $_SESSION['fname'] = $num['fullname'];
+            $id = $num['id'];
+            $fname = $num['fullname'];
+            $_SESSION['id'] = $id;
+            $_SESSION['fname'] = $fname;
             echo "<script>alert('Sign in Success');</script>";
             echo "<script>window.location.href = '../layout/travel.php?act=all'</script>";
         }else{
